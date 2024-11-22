@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Ultra Rápido</title>
+<style>
+/* Fonte Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0078ff;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1rem;
+  color: #666;
+}
+
+header a {
+  color: #0078ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+.upload-box {
+  margin: 30px 0;
+}
+
+#upload-button {
+  background: linear-gradient(45deg, #0078ff, #00d2ff);
+  color: #fff;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0px 4px 6px rgba(0, 120, 255, 0.3);
+}
+
+#upload-button i {
+  margin-right: 10px;
+}
+
+#upload-button:hover {
+  background: linear-gradient(45deg, #005bb5, #0088cc);
+  transform: scale(1.05);
+}
+
+.alert {
+  background: #ffe6e6;
+  color: #d9534f;
+  border-left: 4px solid #d9534f;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 20px 0;
+  font-size: 0.95rem;
+}
+
+.alert .highlight {
+  font-weight: 600;
+  color: #c9302c;
+}
+
+.info {
+  background: #e6f7ff;
+  color: #31708f;
+  border-left: 4px solid #5bc0de;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 20px 0;
+  font-size: 0.95rem;
+}
+
+footer nav {
+  margin-top: 20px;
+}
+
+footer nav a {
+  color: #0078ff;
+  font-size: 0.9rem;
+  margin: 0 8px;
+  text-decoration: none;
+}
+
+footer nav a:hover {
+  text-decoration: underline;
+}
+
+    </style>
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 Upload Ultra Rápido</h1>
+      <p>Hospede arquivos com <strong>1 GiB de limite</strong>! Leia nosso <a href="#">FAQ</a>.</p>
+    </header>
+
+    <main>
+      <div class="upload-box">
+        <button id="upload-button">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Clique ou arraste seus arquivos
+        </button>
+      </div>
+
+      <div class="alert">
+        <p><i class="fa-solid fa-exclamation-triangle"></i> Limite de 250 Mbps ativo devido a alta demanda. <span class="highlight">Estamos trabalhando para melhorar!</span></p>
+      </div>
+
+      <div class="info">
+        <p>Curioso sobre como isso funciona? Visite nosso <a href="#">Infrablog</a>.</p>
+      </div>
+    </main>
+
+    <footer>
+      <nav>
+        <a href="#">Pomf</a>
+        <a href="#">Ferramentas</a>
+        <a href="#">Git</a>
+        <a href="#">Transparência</a>
+        <a href="#">Termos & Privacidade</a>
+        <a href="#">Doar</a>
+      </nav>
+    </footer>
+  </div>
+<script>
+document.getElementById("upload-button").addEventListener("click", () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '*/*'; // Aceita todos os tipos de arquivos
+  
+    input.addEventListener('change', async () => {
+      const file = input.files[0];
+      if (!file) return alert("Nenhum arquivo selecionado!");
+  
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert(`Erro: ${errorData.error}`);
+          return;
+        }
+  
+        const data = await response.json();
+        alert(`Upload bem-sucedido! Link: ${data.file_url}`);
+        // Exibe o link no DOM
+        const link = document.createElement('a');
+        link.href = data.file_url;
+        link.textContent = "Clique aqui para acessar o arquivo";
+        link.target = "_blank";
+        document.body.appendChild(link);
+      } catch (error) {
+        console.error('Erro no upload:', error);
+        alert("Erro no upload. Tente novamente.");
+      }
+    });
+  
+    input.click();
+  });
+  
+  </script>
+
+
+</body>
+</html>
